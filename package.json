@@ -1,0 +1,17 @@
+{
+  "name": "OpenCV",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "jimp": "^0.13.0",
+    "jsdom": "^16.2.2"
+  }
+}
