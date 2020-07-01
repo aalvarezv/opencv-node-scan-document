@@ -9,40 +9,27 @@ const { writeFileSync } = require('fs');
     //carga openCV
     await loadOpenCV();
 
-    const archivo = await loadImage('./imagen.jpeg');
-    let image = cv.imread(archivo);
+    const archivo = await loadImage('./output.jpg');
+    let src = cv.imread(archivo);
     
-    //BAD IDEA END
-    let edges = new cv.Mat();
-    cv.Canny(image,edges,100,200);
-    // cv.imshow($("canvas")[0],edges);
-    let contours = new cv.MatVector();
-    let hierarchy = new cv.Mat();
+    let dst = new cv.Mat();
+    let low = new cv.Mat(src.rows, src.cols, src.type(), [170, 170, 170, 255]);
+    let high = new cv.Mat(src.rows, src.cols, src.type(), [255, 255, 255, 255]);
+    // You can try more different parameters
+    cv.inRange(src, low, high, dst);
 
-    cv.findContours(edges,contours,hierarchy,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE);
-    
-    let cnts = []
-    for(let i=0;i<contours.size();i++){
-        const tmp = contours.get(i);
-        const peri = cv.arcLength(tmp,true);
-        let approx = new cv.Mat();
-        
-        let result = {
-            area:cv.contourArea(tmp),
-            points:[]
-        };
+    //cv.threshold(dst, dst, 128, 255, cv.THRESH_BINARY);
 
-        cv.approxPolyDP(tmp,approx,0.02*peri,true);
-        const pointsData = approx.data32S;
-        for(let j=0;j<pointsData.length/2;j++)
-            result.points.push({x:pointsData[2*j],y:pointsData[2*j+1]});
-        
-        if(result.points.length===4) cnts.push(result);
-        
-    }
-    cnts.sort((a,b)=>b.area-a.area);
+    const canvas = createCanvas(300, 300);
+    cv.imshow(canvas, dst);
+    writeFileSync('output1.jpg', canvas.toBuffer('image/jpeg'));
 
-    console.log(cnts[0]);
+
+    src.delete(); 
+    dst.delete(); 
+    low.delete(); 
+    high.delete();
+
 
   
  
